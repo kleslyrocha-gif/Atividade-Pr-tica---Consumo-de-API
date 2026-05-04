@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscar Livros</title>
+    <link rel="stylesheet" href="sytle.css">
+</head> 
+
+<body>
+    <h1>Buscar livros</h1>
+    <input type="text" id="busca" placeholder="Digite o nome do livro">
+    <button onclick="buscarLivros()">Buscar</button>
+
+    <div id="resultado"></div>
+
+    <script>
+        async function buscarLivros() {
+            const termo = document.getElementById("busca").value;
+            const resultado = document.getElementById("resultado");
+
+            resultado.innerHTML = "Carregando...";
+
+            try{
+                const response = await fetch('api.php?q=${termo}');
+                const data = await response.json();
+
+                resultado.innerHTML = "";
+
+                if(data.length === 0){
+                    resultado.innerHTML = "Nenhum livro encontrado :(";
+                    return;
+                }
+
+                data.forEach(livro => { resultado.innerHTML += `<div class="livro"> 
+                    <h3>${livro.titulo}</h3> 
+                    <p><strong>Autor:</strong> ${livro.autor}</p>
+                    <p><strong>Ano:</strong> ${livro.ano}</p>
+                    </div>`;          
+                });
+            } catch(error){
+                resultado.innerHTML = "Erro ao buscar dados!";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
